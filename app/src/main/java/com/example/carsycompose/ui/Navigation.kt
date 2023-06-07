@@ -1,6 +1,7 @@
 package com.example.carsycompose.ui
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -27,18 +28,18 @@ fun Navigation(){
     val navController = rememberNavController()
     Scaffold(
         bottomBar = { BottomMenu(navController = navController)},
-        content = { NavGraph(navController = navController) }
+        content = { NavGraph(paddingValues = it, navController = navController) }
     )
 }
 
 @Composable
-fun NavGraph(navController: NavHostController){
+fun NavGraph(paddingValues: PaddingValues, navController: NavHostController){
     NavHost(
         navController = navController,
         startDestination = Screens.Overview.route
     ) {
         composable(route = Screens.Overview.route){ OverviewScreen() }
-        composable(route = Screens.TimeLine.route){ TimeLineScreen() }
+        composable(route = Screens.TimeLine.route){ TimeLineScreen(paddingValues) }
         composable(route = Screens.Calculators.route){ CalculatorsScreen() }
     }
 }
