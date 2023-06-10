@@ -43,7 +43,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
@@ -83,11 +85,12 @@ fun TimeLineScreen(paddingValues: PaddingValues) {
                     .onGloballyPositioned { coordinates ->
                         textFieldSize = coordinates.size.toSize()
                     },
-                label = { Text("Cars") },
+                label = { Text("Cars", fontSize = 18.sp) },
                 trailingIcon = {
                     Icon(icon, "contentDescription",
                         Modifier.clickable { expanded = !expanded })
-                }
+                },
+                textStyle = TextStyle.Default.copy(fontSize = 24.sp, textAlign = TextAlign.Center)
             )
             DropdownMenu(
                 expanded = expanded,
@@ -95,15 +98,24 @@ fun TimeLineScreen(paddingValues: PaddingValues) {
                 modifier = Modifier
                     .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
             ) {
-                cars.map { it.name }.forEach { label ->
+                cars.map { it.name }.forEach { name ->
                     DropdownMenuItem(
-                        text = { Text(text = label) },
+                        text = {
+                            Text(
+                                text = name,
+                                fontSize = 24.sp,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                               },
                         onClick = {
-                            selectedText = label
+                            selectedText = name
                             expanded = false
                             data.clear()
                             data.add(DataProvider.getTimeLineList(cars.find { it.name == selectedText }!!.costs))
-                        })
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
             }
         }
@@ -173,7 +185,9 @@ private fun MonthItem(item: CostListItem.CostMonthItem) {
             text = item.month,
             color = Color(166, 111, 131),
             fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(.8f)
         )
     }
 
