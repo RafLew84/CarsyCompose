@@ -85,7 +85,7 @@ fun TimeLineScreen(paddingValues: PaddingValues) {
                     .onGloballyPositioned { coordinates ->
                         textFieldSize = coordinates.size.toSize()
                     },
-                label = { Text("Cars", fontSize = 18.sp) },
+                label = { Text("Kolekcja", fontSize = 18.sp) },
                 trailingIcon = {
                     Icon(icon, "contentDescription",
                         Modifier.clickable { expanded = !expanded })
