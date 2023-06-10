@@ -2,6 +2,7 @@ package com.example.carsycompose.ui.screens
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,45 +18,117 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Circle
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.toSize
+import com.example.carsycompose.data.Car
 import com.example.carsycompose.data.CostListItem
 import com.example.carsycompose.data.DataProvider
 import com.example.carsycompose.util.dateFormatter
 import com.example.carsycompose.util.decimalFormat
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TimeLineScreen(paddingValues: PaddingValues){
-    val data = remember { DataProvider.getTimeLineList(DataProvider.cars[0].costs) }
-    LazyColumn(
-        modifier = Modifier
-            .padding(paddingValues)
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        items(data.size){index ->
-            when(data[index]){
-                is CostListItem.CostYearItem -> YearItem(item = data[index] as CostListItem.CostYearItem)
-                is CostListItem.CostMonthItem -> MonthItem(item = data[index] as CostListItem.CostMonthItem)
-                is CostListItem.CostGeneralItem -> GeneralItem(item = data[index] as CostListItem.CostGeneralItem)
+fun TimeLineScreen(paddingValues: PaddingValues) {
+    val cars = remember { DataProvider.cars }
+
+    var expanded by remember { mutableStateOf(false) }
+    var selectedText by remember { mutableStateOf(cars.first().name) }
+
+    var textFieldSize by remember { mutableStateOf(Size.Zero) }
+
+    val data = remember {
+        mutableStateListOf(DataProvider.getTimeLineList(cars.first().costs))
+    }
+
+    val icon = if (expanded)
+        Icons.Filled.ArrowUpward
+    else
+        Icons.Filled.ArrowDownward
+
+    Column {
+        Column(Modifier.padding(20.dp)) {
+            OutlinedTextField(
+                value = selectedText,
+                readOnly = true,
+                onValueChange = { name -> selectedText = name },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .onGloballyPositioned { coordinates ->
+                        //This value is used to assign to the DropDown the same width
+                        textFieldSize = coordinates.size.toSize()
+                    },
+                label = { Text("Cars") },
+                trailingIcon = {
+                    Icon(icon, "contentDescription",
+                        Modifier.clickable { expanded = !expanded })
+                }
+            )
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier
+                    .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+            ) {
+                cars.map { it.name }.forEach { label ->
+                    DropdownMenuItem(
+                        text = { Text(text = label) },
+                        onClick = {
+                            selectedText = label
+                            expanded = false
+                            data.clear()
+                            data.add(DataProvider.getTimeLineList(cars.find { it.name == selectedText }!!.costs))
+                        })
+                }
+            }
+        }
+
+        LazyColumn(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            items(data[0].size) { index ->
+                when (data[0][index]) {
+                    is CostListItem.CostYearItem -> YearItem(item = data[0][index] as CostListItem.CostYearItem)
+                    is CostListItem.CostMonthItem -> MonthItem(item = data[0][index] as CostListItem.CostMonthItem)
+                    is CostListItem.CostGeneralItem -> GeneralItem(item = data[0][index] as CostListItem.CostGeneralItem)
+                }
             }
         }
     }
 }
+
 @Composable
-private fun YearItem(item: CostListItem.CostYearItem){
+private fun YearItem(item: CostListItem.CostYearItem) {
     Text(
         text = item.year,
         fontSize = 36.sp,
@@ -68,12 +141,12 @@ private fun YearItem(item: CostListItem.CostYearItem){
 }
 
 @Composable
-private fun MonthItem(item: CostListItem.CostMonthItem){
+private fun MonthItem(item: CostListItem.CostMonthItem) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(40.dp)
-    ){
+    ) {
         Box(modifier = Modifier
             .width(60.dp)
             .fillMaxHeight()
@@ -108,14 +181,15 @@ private fun MonthItem(item: CostListItem.CostMonthItem){
 }
 
 @Composable
-private fun GeneralItem(item: CostListItem.CostGeneralItem){
+private fun GeneralItem(item: CostListItem.CostGeneralItem) {
     Row(
         modifier = Modifier.height(68.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(modifier = Modifier
-            .width(60.dp)
-            .fillMaxHeight(),
+        Box(
+            modifier = Modifier
+                .width(60.dp)
+                .fillMaxHeight(),
             contentAlignment = Alignment.Center
         ) {
             Canvas(modifier = Modifier.fillMaxSize()) {
@@ -160,7 +234,9 @@ private fun GeneralItem(item: CostListItem.CostGeneralItem){
         Spacer(Modifier.weight(1f))
         Text(
             text = item.cost.amount.toString().format(decimalFormat) + " zł",
-            modifier = Modifier.align(Alignment.CenterVertically).padding(end = 12.dp),
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .padding(end = 12.dp),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = Color(128, 203, 196)
