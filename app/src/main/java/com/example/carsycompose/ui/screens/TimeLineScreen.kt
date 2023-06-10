@@ -127,11 +127,11 @@ fun TimeLineScreen(paddingValues: PaddingValues) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(data[0].size) { index ->
-                when (data[0][index]) {
-                    is CostListItem.CostYearItem -> YearItem(item = data[0][index] as CostListItem.CostYearItem)
-                    is CostListItem.CostMonthItem -> MonthItem(item = data[0][index] as CostListItem.CostMonthItem)
-                    is CostListItem.CostGeneralItem -> GeneralItem(item = data[0][index] as CostListItem.CostGeneralItem)
+            items(data.first().size) { index ->
+                when (data.first()[index]) {
+                    is CostListItem.CostYearItem -> YearItem(item = data.first()[index] as CostListItem.CostYearItem)
+                    is CostListItem.CostMonthItem -> MonthItem(item = data.first()[index] as CostListItem.CostMonthItem)
+                    is CostListItem.CostGeneralItem -> GeneralItem(item = data.first()[index] as CostListItem.CostGeneralItem)
                 }
             }
         }
