@@ -81,7 +81,6 @@ fun TimeLineScreen(paddingValues: PaddingValues) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .onGloballyPositioned { coordinates ->
-                        //This value is used to assign to the DropDown the same width
                         textFieldSize = coordinates.size.toSize()
                     },
                 label = { Text("Cars") },
