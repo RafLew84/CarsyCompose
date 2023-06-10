@@ -111,7 +111,6 @@ fun CalculatorsScreen(){
                             expanded = false
                             labelData.clear()
                             labelData.add(calculatorItems.find { it.first == selectedText }!!.second)
-                            labelData.forEach{ Log.d("data", it.toString())}
                         },
                         modifier = Modifier.fillMaxWidth()
                     )
