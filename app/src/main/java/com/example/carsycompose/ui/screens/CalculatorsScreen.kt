@@ -223,39 +223,6 @@ private fun CreateCalculateButton(
     }
 }
 
-
-private fun onClickCalculateButton(
-    selectedText: String,
-    calculatorItems: List<Pair<String, List<String>>>,
-    fieldTop: String,
-    fieldMiddle: String,
-    fieldBottom: String,
-    onMainResultChange: (String) -> Unit,
-    onSubResultChange: (String) -> Unit
-) {
-    val isEmptyOrNull = areFieldsEmptyOrNull(fieldTop, fieldMiddle, fieldBottom)
-    if (isEmptyOrNull) {
-        onMainResultChange("")
-        onSubResultChange("")
-    }
-    else {
-        val result = when (selectedText) {
-            calculatorItems.first().first -> travelCalculator(
-                Triple(fieldTop, fieldMiddle, fieldBottom)
-            )
-
-            calculatorItems.second().first -> fuelCalculator(
-                Triple(fieldTop, fieldMiddle, fieldBottom)
-            )
-
-            else -> distanceCalculator(Triple(fieldTop, fieldMiddle, fieldBottom))
-        }
-
-        onMainResultChange(result.first)
-        onSubResultChange(result.second)
-    }
-}
-
 @Composable
 private fun CreateBottomLabels(
     selectedText: String,
@@ -309,6 +276,37 @@ fun CreateOutlinedTextField(
     )
 }
 
+private fun onClickCalculateButton(
+    selectedText: String,
+    calculatorItems: List<Pair<String, List<String>>>,
+    fieldTop: String,
+    fieldMiddle: String,
+    fieldBottom: String,
+    onMainResultChange: (String) -> Unit,
+    onSubResultChange: (String) -> Unit
+) {
+    val isEmptyOrNull = areFieldsEmptyOrNull(fieldTop, fieldMiddle, fieldBottom)
+    if (isEmptyOrNull) {
+        onMainResultChange("")
+        onSubResultChange("")
+    }
+    else {
+        val result = when (selectedText) {
+            calculatorItems.first().first -> travelCalculator(
+                Triple(fieldTop, fieldMiddle, fieldBottom)
+            )
+
+            calculatorItems.second().first -> fuelCalculator(
+                Triple(fieldTop, fieldMiddle, fieldBottom)
+            )
+
+            else -> distanceCalculator(Triple(fieldTop, fieldMiddle, fieldBottom))
+        }
+
+        onMainResultChange(result.first)
+        onSubResultChange(result.second)
+    }
+}
 private fun fuelCalculator(values: Triple<String, String, String>): Pair<String, String> {
 
     val distance = values.first.toDouble()
