@@ -38,7 +38,7 @@ fun NavGraph(paddingValues: PaddingValues, navController: NavHostController){
         navController = navController,
         startDestination = Screens.Overview.route
     ) {
-        composable(route = Screens.Overview.route){ OverviewScreen() }
+        composable(route = Screens.Overview.route){ OverviewScreen(paddingValues) }
         composable(route = Screens.TimeLine.route){ TimeLineScreen(paddingValues) }
         composable(route = Screens.Calculators.route){ CalculatorsScreen() }
     }
