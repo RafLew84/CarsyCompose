@@ -156,7 +156,6 @@ private fun CreateInnerCardTitle(title: String, width: Int) {
     }
 }
 
-@Composable
 private fun getCarDetails(index: Int): List<Pair<String, String>> {
     var data: List<Pair<String, String>>
     DataProvider.cars[index].apply {

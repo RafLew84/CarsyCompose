@@ -79,7 +79,7 @@ fun TimeLineScreen(paddingValues: PaddingValues) {
             OutlinedTextField(
                 value = selectedText,
                 readOnly = true,
-                onValueChange = { name -> selectedText = name },
+                onValueChange = { selectedText = it },
                 modifier = Modifier
                     .fillMaxWidth()
                     .onGloballyPositioned { coordinates ->
@@ -190,7 +190,6 @@ private fun MonthItem(item: CostListItem.CostMonthItem) {
             modifier = Modifier.fillMaxWidth(.8f)
         )
     }
-
 }
 
 @Composable

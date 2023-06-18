@@ -1,6 +1,5 @@
 package com.example.carsycompose.ui
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -21,7 +20,6 @@ import com.example.carsycompose.ui.screens.OverviewScreen
 import com.example.carsycompose.ui.screens.Screens
 import com.example.carsycompose.ui.screens.TimeLineScreen
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Navigation(){
